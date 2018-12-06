@@ -2,4 +2,4 @@ dependencies:
 - alias: database
   name: postgresql
   version: 2.7.6
-  repository: @stable
+  repository: https://kubernetes-charts.storage.googleapis.com

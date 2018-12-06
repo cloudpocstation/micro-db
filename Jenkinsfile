@@ -1,6 +1,6 @@
 pipeline {
   agent {
-    label "jenkins-maven"
+    label "jenkins-jx-base"
   }
   environment {
     ORG = 'cloudpocstation'
@@ -18,9 +18,7 @@ pipeline {
         HELM_RELEASE = "$PREVIEW_NAMESPACE".toLowerCase()
       }
       steps {
-        container('maven') {
-          sh "mvn versions:set -DnewVersion=$PREVIEW_VERSION"
-          sh "mvn install"
+        container('jx-base') {
           sh "export VERSION=$PREVIEW_VERSION && skaffold build -f skaffold.yaml"
           sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:$PREVIEW_VERSION"
           dir('charts/preview') {
@@ -35,7 +33,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        container('maven') {
+        container('jx-base') {
 
           // ensure we're not on a detached head
           sh "git checkout master"
@@ -44,9 +42,7 @@ pipeline {
 
           // so we can retrieve the version in later steps
           sh "echo \$(jx-release-version) > VERSION"
-          sh "mvn versions:set -DnewVersion=\$(cat VERSION)"
           sh "jx step tag --version \$(cat VERSION)"
-          sh "mvn clean deploy"
           sh "export VERSION=`cat VERSION` && skaffold build -f skaffold.yaml"
           sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:\$(cat VERSION)"
         }
@@ -57,7 +53,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        container('maven') {
+        container('jx-base') {
           dir('charts/micro-db') {
             sh "jx step changelog --version v\$(cat ../../VERSION)"
 

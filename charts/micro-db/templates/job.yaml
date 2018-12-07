@@ -26,7 +26,7 @@ spec:
               fieldPath: metadata.namespace
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         name: {{ .Chart.Name }}
-        command: ["flyway","migrate", "-url=jdbc:postgresql://micro-db/my-database" "-user=postgres" "-password=postgres" ]
+        command: ["flyway","migrate","-url=jdbc:postgresql://micro-db/my-database","-user=postgres","-password=postgres" ]
       #  args: 
       # serviceAccountName: {{ .Chart.Name }}
       restartPolicy: Never

@@ -8,10 +8,6 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Chart.Name }}"
   name: {{ .Chart.Name }}
-{{- if .Values.Annotations }}
-  annotations:
-{{ toYaml .Values.Annotations | indent 4 }}
-{{- end }}
 spec:
   # backoffLimit: {{ .Values.BackoffLimit }}
   template:
@@ -21,7 +17,6 @@ spec:
         heritage: {{.Release.Service | quote }}
         release: {{.Release.Name | quote }}
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-      
     spec:
       containers:
       - env:
@@ -32,6 +27,6 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         name: {{ .Chart.Name }}
         command: ["migrate"]
-        args: 
-      serviceAccountName: {{ .Chart.Name }}
+      #  args: 
+      # serviceAccountName: {{ .Chart.Name }}
       restartPolicy: Never
